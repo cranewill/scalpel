@@ -11,6 +11,10 @@ type PlayerData struct {
 	Uuid     string
 	Sign     SignInfo
 	SomeData Some
+	Array    []int32
+	Map      map[int32]int32
+	MapSlice map[int32][]int32
+	MapMap   map[int32]map[string]string
 }
 
 type Some struct {
@@ -55,6 +59,24 @@ var player = PlayerData{
 			Day: 2,
 		},
 	}},
+	Array: []int32{1, 2, 3},
+	Map: map[int32]int32{
+		1: 100,
+		2: 200,
+	},
+	MapSlice: map[int32][]int32{
+		1: {1, 2, 3},
+	},
+	MapMap: map[int32]map[string]string{
+		1: {
+			"apple":  "good",
+			"orange": "nice",
+		},
+		2: {
+			"dog":  "cute",
+			"frog": "immortal",
+		},
+	},
 }
 
 func TestSetField(t *testing.T) {
@@ -64,6 +86,11 @@ func TestSetField(t *testing.T) {
 	params_sign_reward_confid := []string{"Sign", "Rewards", "0", "ConfId"}
 	params_some_uuid := []string{"SomeData", "Uuid"}
 	params_some_poll_reward_amount := []string{"SomeData", "Pool", "2", "Rewards", "1", "Amount"}
+	params_map := []string{"Map", "2"}
+	params_array := []string{"Array", "1"}
+	params_map_slice := []string{"MapSlice", "1", "2"}
+	params_map_map := []string{"MapMap", "2", "frog"}
+
 	err = scalpel.SetField(&player, params_uuid, "new_playerId")
 	if err != nil {
 		log.Println(err.Error())
@@ -72,7 +99,7 @@ func TestSetField(t *testing.T) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	err = scalpel.SetField(&player, params_sign_reward_confid, "999")
+	err = scalpel.SetField(&player, params_sign_reward_confid, "12345")
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -80,7 +107,23 @@ func TestSetField(t *testing.T) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	err = scalpel.SetField(&player, params_some_poll_reward_amount, "31412")
+	err = scalpel.SetField(&player, params_some_poll_reward_amount, "777")
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = scalpel.SetField(&player, params_map, "1000")
+	if err != nil {
+		panic(err)
+	}
+	err = scalpel.SetField(&player, params_array, "2222")
+	if err != nil {
+		panic(err)
+	}
+	err = scalpel.SetField(&player, params_map_slice, "3333")
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = scalpel.SetField(&player, params_map_map, "cute")
 	if err != nil {
 		log.Println(err.Error())
 	}
