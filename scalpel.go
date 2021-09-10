@@ -220,8 +220,11 @@ func createNew(val reflect.Value, fieldPath []string, flag int, newVal string, p
 		}
 	case reflect.Array, reflect.Slice:
 		var idx = -1
-		_idx, err := parse.ToIntE(param)
-		if err == nil {
+		if pathCorrect {
+			_idx, err := parse.ToIntE(param)
+			if err != nil {
+				return reflect.Value{}, err
+			}
 			idx = _idx
 		}
 		v = reflect.MakeSlice(typ, 0, 0)
@@ -234,11 +237,13 @@ func createNew(val reflect.Value, fieldPath []string, flag int, newVal string, p
 		}
 	case reflect.Map:
 		var key interface{}
-		_key, err := typeParse(typ.Key().Kind(), param)
-		if err != nil {
-			return reflect.Value{}, err
+		if pathCorrect {
+			_key, err := typeParse(typ.Key().Kind(), param)
+			if err != nil {
+				return reflect.Value{}, err
+			}
+			key = _key
 		}
-		key = _key
 		v = reflect.MakeMap(typ)
 		itr := val.MapRange()
 		for itr.Next() {
